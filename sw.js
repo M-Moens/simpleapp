@@ -1,5 +1,5 @@
-// Basic offline cache for PWA
-const CACHE = "two-pane-notes-v1";
+// Basic service worker for offline support
+const CACHE = "two-pane-v1";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,11 +8,11 @@ const ASSETS = [
   "./icons/icon-512.png"
 ];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
+self.addEventListener("install", e => {
+  e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
 });
 
-self.addEventListener("activate", (e) => {
+self.addEventListener("activate", e => {
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
@@ -20,16 +20,14 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-self.addEventListener("fetch", (e) => {
-  const { request } = e;
-  // Network-first for html, cache-first for static
-  if (request.mode === "navigate" || request.destination === "document") {
+self.addEventListener("fetch", e => {
+  if (e.request.mode === "navigate") {
     e.respondWith(
-      fetch(request).catch(() => caches.match("./index.html"))
+      fetch(e.request).catch(() => caches.match("./index.html"))
     );
   } else {
     e.respondWith(
-      caches.match(request).then(res => res || fetch(request))
+      caches.match(e.request).then(res => res || fetch(e.request))
     );
   }
 });
