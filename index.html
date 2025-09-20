@@ -3,244 +3,41 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Two‑Pane Notepad</title>
+  <title>Two-Pane Notepad</title>
+  <meta name="theme-color" content="#0b0c0f" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <style>
-    :root{ --bg:#0b0c0f; --panel:#12141a; --text:#e5e7eb; --muted:#9aa3b2; --accent:#3b82f6; --border:#1f2430 }
-    *{ box-sizing:border-box }
-    html,body{ height:100% }
-    body{ margin:0; background:var(--bg); color:var(--text); font:15px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji" }
-
-    .app{ display:flex; flex-direction:column; height:100%; }
-
-    header{
-      display:flex; align-items:center; gap:.5rem; padding:.6rem .8rem; border-bottom:1px solid var(--border);
-      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,0));
-      position:sticky; top:0; z-index:10;
-    }
-    header h1{ font-size:14px; margin:0; font-weight:600; color:var(--muted) }
-    .spacer{ flex:1 }
-    button, .seg label{
-      background:#161a22; color:var(--text); border:1px solid var(--border); border-radius:.6rem; padding:.45rem .7rem; cursor:pointer; font:inherit;
-    }
-    button:hover, .seg input:checked + span{ border-color:var(--accent) }
-    .seg{ display:inline-flex; border:1px solid var(--border); border-radius:.6rem; overflow:hidden }
-    .seg input{ display:none }
-    .seg span{ padding:.45rem .7rem; display:inline-flex; align-items:center; gap:.4rem }
-
-    .wrap{ display:flex; flex:1; min-height:0; }
-    .pane{ flex:1; display:flex; flex-direction:column; min-width:120px; background:var(--panel) }
-    .titlebar{ display:flex; align-items:center; gap:.6rem; padding:.45rem .6rem; border-bottom:1px solid var(--border); color:var(--muted) }
-    .titlebar input{ flex:1; background:transparent; border:0; color:var(--text); outline:none; font-weight:600 }
-
-    textarea{
-      flex:1; width:100%; resize:none; border:0; outline:none; background:transparent; color:var(--text);
-      padding:12px; font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; tab-size:2; caret-color:var(--accent);
-      white-space:pre-wrap; overflow:auto; word-break:break-word; -webkit-font-smoothing:antialiased;
-    }
-
-    .gutter{ width:8px; cursor:col-resize; background:linear-gradient(90deg, transparent, rgba(59,130,246,.15), transparent); position:relative }
-    .gutter::before{ content:""; position:absolute; inset:0; border-left:1px solid var(--border); border-right:1px solid var(--border) }
-
-    footer{ display:flex; gap:1rem; align-items:center; padding:.5rem .8rem; border-top:1px solid var(--border); color:var(--muted) }
-    .counter{ margin-left:auto }
-    .kbd{ font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px; border:1px solid var(--border); padding:.05rem .35rem; border-radius:.4rem; color:var(--muted) }
-
-    /* Light mode */
-    .light{ --bg:#f6f7fb; --panel:#ffffff; --text:#0b0c0f; --muted:#5c667a; --accent:#2563eb; --border:#e6e8ee }
+    :root{--bg:#0b0c0f;--panel:#12141a;--text:#e5e7eb;--muted:#9aa3b2;--accent:#3b82f6;--border:#1f2430}
+    *{box-sizing:border-box}html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 system-ui}
+    .wrap{display:flex;height:100%}
+    textarea{flex:1;border:0;resize:none;outline:none;padding:12px;font:14px/1.6 ui-monospace;background:var(--panel);color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .gutter{width:8px;cursor:col-resize;background:rgba(59,130,246,.15)}
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <header>
-      <h1>Two‑Pane Notepad</h1>
-      <div class="spacer"></div>
-      <div class="seg" title="Theme">
-        <label><input type="radio" name="theme" value="dark" checked><span>Dark</span></label>
-        <label><input type="radio" name="theme" value="light"><span>Light</span></label>
-      </div>
-      <button id="swap" title="Swap left/right (Ctrl+Shift+S)">Swap</button>
-      <button id="clear" title="Clear both (Ctrl+K)">Clear</button>
-      <button id="download" title="Export to .txt (Ctrl+S)">Export</button>
-      <label class="seg" title="Import .txt">
-        <input id="file" type="file" accept=".txt" style="display:none" />
-        <span>Import</span>
-      </label>
-    </header>
-
-    <div class="wrap" id="wrap">
-      <section class="pane" id="leftPane">
-        <div class="titlebar">
-          <input id="leftTitle" placeholder="Left title…" />
-        </div>
-        <textarea id="left" placeholder="Type on the left…"></textarea>
-      </section>
-      <div class="gutter" id="gutter" aria-label="Resize"></div>
-      <section class="pane" id="rightPane">
-        <div class="titlebar">
-          <input id="rightTitle" placeholder="Right title…" />
-        </div>
-        <textarea id="right" placeholder="Type on the right…"></textarea>
-      </section>
-    </div>
-
-    <footer>
-      <div>Autosaves locally · <span class="kbd">Ctrl</span> + <span class="kbd">B</span> toggles focus</div>
-      <div class="counter" id="counter">0 chars</div>
-    </footer>
+  <div class="wrap" id="wrap">
+    <textarea id="left" placeholder="Type on the left…"></textarea>
+    <div class="gutter" id="gutter"></div>
+    <textarea id="right" placeholder="Type on the right…"></textarea>
   </div>
 
   <script>
-    // --- DOM helpers
-    const $ = (sel) => document.querySelector(sel);
-    const left = $('#left');
-    const right = $('#right');
-    const leftTitle = $('#leftTitle');
-    const rightTitle = $('#rightTitle');
-    const app = $('#app');
+    // Simple resizable panes
+    const left=document.getElementById('left');
+    const right=document.getElementById('right');
+    const gutter=document.getElementById('gutter');
+    const wrap=document.getElementById('wrap');
 
-    // --- State & persistence
-    const KEY = 'twoPaneNotepad/v1';
-    const load = () => {
-      try{ const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null }catch{ return null }
-    }
-    const save = (state) => localStorage.setItem(KEY, JSON.stringify(state));
+    function save(){localStorage.setItem('twoPane',JSON.stringify({left:left.value,right:right.value}));}
+    function load(){try{const s=JSON.parse(localStorage.getItem('twoPane'));if(s){left.value=s.left;right.value=s.right;}}catch{}}
+    load();
+    left.addEventListener('input',save);
+    right.addEventListener('input',save);
 
-    const state = Object.assign({
-      left:'', right:'', leftTitle:'', rightTitle:'', sizes:[50,50], theme:'dark'
-    }, load()||{});
-
-    // Apply initial state
-    left.value = state.left; right.value = state.right;
-    leftTitle.value = state.leftTitle; rightTitle.value = state.rightTitle;
-    setSizes(state.sizes[0], state.sizes[1]);
-    if(state.theme === 'light') { app.classList.add('light'); }
-    document.querySelectorAll('input[name="theme"]').forEach(r=>{
-      r.checked = (r.value === state.theme);
-    });
-
-    // Counters
-    const updateCounter = () => {
-      const n = left.value.length + right.value.length;
-      $('#counter').textContent = `${n} chars`;
-    }
-    updateCounter();
-
-    // Debounced autosave
-    let t; const autosave = () => { clearTimeout(t); t = setTimeout(()=>{
-      save({
-        left:left.value, right:right.value,
-        leftTitle:leftTitle.value, rightTitle:rightTitle.value,
-        sizes:getSizes(), theme: app.classList.contains('light')?'light':'dark'
-      });
-      updateCounter();
-    }, 300) };
-
-    [left,right,leftTitle,rightTitle].forEach(el=>{
-      el.addEventListener('input', autosave);
-    });
-
-    // --- Resizable gutter
-    const gutter = $('#gutter');
-    let dragging = false, startX = 0, startLeftPct = 50;
-
-    function getSizes(){
-      const total = $('#wrap').clientWidth - gutter.offsetWidth;
-      const l = $('#leftPane').clientWidth;
-      const r = $('#rightPane').clientWidth;
-      const lp = Math.round((l/total)*100);
-      const rp = 100 - lp;
-      return [lp,rp];
-    }
-    function setSizes(lpct,rpct){
-      $('#leftPane').style.flex = `${lpct} 0 0`;
-      $('#rightPane').style.flex = `${rpct} 0 0`;
-    }
-
-    gutter.addEventListener('mousedown', (e)=>{
-      dragging = true; startX = e.clientX; startLeftPct = getSizes()[0];
-      document.body.style.userSelect = 'none';
-    });
-    window.addEventListener('mouseup', ()=>{
-      if(dragging){ dragging = false; document.body.style.userSelect = ''; autosave(); }
-    });
-    window.addEventListener('mousemove', (e)=>{
-      if(!dragging) return;
-      const wrap = $('#wrap');
-      const dx = e.clientX - startX;
-      const pct = dx / wrap.clientWidth * 100;
-      const lp = Math.min(85, Math.max(15, startLeftPct + pct));
-      setSizes(lp, 100-lp);
-    });
-
-    // --- Buttons & actions
-    $('#swap').addEventListener('click', ()=>{
-      [left.value, right.value] = [right.value, left.value];
-      [leftTitle.value, rightTitle.value] = [rightTitle.value, leftTitle.value];
-      autosave();
-    });
-
-    $('#clear').addEventListener('click', ()=>{
-      if(confirm('Clear both panes?')){
-        left.value = right.value = leftTitle.value = rightTitle.value = '';
-        autosave();
-      }
-    });
-
-    $('#download').addEventListener('click', ()=>{
-      const txt = `# ${leftTitle.value || 'Left'}\n\n${left.value}\n\n---\n\n# ${rightTitle.value || 'Right'}\n\n${right.value}`;
-      const blob = new Blob([txt], {type:'text/plain'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'two-pane-notes.txt';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    });
-
-    $('#file').addEventListener('change', async (e)=>{
-      const f = e.target.files[0]; if(!f) return;
-      const txt = await f.text();
-      // naive import: split by --- separator if present
-      const parts = txt.split(/\n\s*---\s*\n/);
-      if(parts.length === 2){
-        // Try to strip simple markdown headings
-        const strip = s => s.replace(/^# .*\n+/, '');
-        left.value = strip(parts[0]);
-        right.value = strip(parts[1]);
-      } else {
-        left.value = txt; right.value = '';
-      }
-      autosave();
-      e.target.value = '';
-    });
-
-    // --- Keyboard shortcuts
-    document.addEventListener('keydown', (e)=>{
-      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s') { e.preventDefault(); $('#download').click(); }
-      if((e.ctrlKey||e.metaKey) && e.shiftKey && e.key.toLowerCase()==='s') { e.preventDefault(); $('#swap').click(); }
-      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k') { e.preventDefault(); $('#clear').click(); }
-      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='b') { e.preventDefault(); (document.activeElement===left?right:left).focus(); }
-    });
-
-    // --- Theme toggle
-    document.querySelectorAll('input[name="theme"]').forEach(r=>{
-      r.addEventListener('change', ()=>{
-        if(r.value==='light') app.classList.add('light'); else app.classList.remove('light');
-        autosave();
-      })
-    });
-
-    // --- Accessibility niceties
-    [left,right].forEach(t=>{
-      t.setAttribute('aria-label', t.id==='left'?'Left editor':'Right editor');
-      t.addEventListener('focus', ()=> t.parentElement.parentElement.scrollIntoView({block:'nearest'}));
-    });
-  </script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js');
-    });
-  }
-</script>
-</body>
-</html>
+    let drag=false,startX=0,startLeftPct=50;
+    function getSizes(){return left.clientWidth/(wrap.clientWidth)*100;}
+    function setSizes(lp){left.style.flex=`0 0 ${lp}%`;right.style.flex=`1 1 ${100-lp}%`;}
+    gutter.addEventListener('mousedown
